@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Perfumería — Perfumes originales y decants</title>
+<meta name="description" content="Perfumes originales y decants de 5 ml, combos y kits. Envíos a toda Argentina desde San Francisco, Córdoba.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Icon sprite (single request, reused via <use>) -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="icon-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 12.5a1.5 1.5 0 0 1-1.5 1.5H8.5A1.5 1.5 0 0 1 7 20.5L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+  <symbol id="icon-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14"/></symbol>
+  <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="icon-whatsapp" viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.82.48 3.53 1.32 5.01L2 22l5.13-1.31A9.96 9.96 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2Zm0 18.06a8 8 0 0 1-4.3-1.25l-.31-.19-3.05.78.81-2.97-.2-.31A7.98 7.98 0 1 1 20 12a7.98 7.98 0 0 1-7.98 8.06Zm4.4-5.98c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.4h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.43-.58 1.63-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z"/></symbol>
+  <symbol id="icon-diamond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2 4 9l8 13 8-13-8-7Z"/><path d="M4 9h16M12 2l-3.5 7L12 22l3.5-13L12 2Z"/></symbol>
+  <symbol id="icon-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></symbol>
+  <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></symbol>
+</svg>
+
+<a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="#top">
+      <svg class="brand__mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-diamond"/></svg>
+      <span class="brand__word">La Perfumería</span>
+    </a>
+    <nav class="site-nav" aria-label="Principal">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#envios">Envíos</a>
+    </nav>
+    <button class="icon-btn cart-toggle" id="cartToggle" aria-haspopup="dialog" aria-controls="cartDrawer" aria-label="Abrir carrito">
+      <svg viewBox="0 0 24 24"><use href="#icon-bag"/></svg>
+      <span class="cart-toggle__count" id="cartCount" hidden>0</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <svg class="hero__facets" viewBox="0 0 800 600" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <path d="M400 40 120 220 250 560 550 560 680 220Z" fill="none" stroke="currentColor" stroke-width="1"/>
+      <path d="M400 40 120 220 400 340 680 220Z" fill="none" stroke="currentColor" stroke-width="1"/>
+      <path d="M400 40 400 340" stroke="currentColor" stroke-width="1"/>
+      <path d="M120 220 400 340 250 560" stroke="currentColor" stroke-width="1"/>
+      <path d="M680 220 400 340 550 560" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <div class="wrap hero__inner">
+      <p class="hero__eyebrow">San Francisco, Córdoba — envíos a toda Argentina</p>
+      <h1 class="hero__title">Cada frasco tiene una historia.<br>Encontrá la tuya.</h1>
+      <p class="hero__lede">Perfumes 100% originales y decants de 5&nbsp;ml, pensados para probar antes de comprometerte con un frasco entero.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#catalogo">Ver catálogo</a>
+        <a class="btn btn--ghost" href="https://www.instagram.com/laperfumeria.sf/" target="_blank" rel="noopener">Seguir en Instagram</a>
+      </div>
+      <dl class="hero__stats">
+        <div><dt>+3.177</dt><dd>ventas realizadas</dd></div>
+        <div><dt>+162k</dt><dd>seguidores en Instagram</dd></div>
+        <div><dt>441</dt><dd>fragancias en catálogo</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="strip" id="envios">
+    <div class="wrap strip__inner">
+      <div class="strip__item">
+        <svg viewBox="0 0 24 24"><use href="#icon-truck"/></svg>
+        <span>Envíos a toda Argentina · 2 a 4 días hábiles</span>
+      </div>
+      <div class="strip__item">
+        <svg viewBox="0 0 24 24"><use href="#icon-diamond"/></svg>
+        <span>100% originales, con procedencia verificada</span>
+      </div>
+      <div class="strip__item">
+        <svg viewBox="0 0 24 24"><use href="#icon-whatsapp"/></svg>
+        <span>Pedidos coordinados por WhatsApp</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog" id="catalogo">
+    <div class="wrap">
+      <div class="catalog__head">
+        <h2>Catálogo</h2>
+        <p id="resultCount" class="catalog__count"></p>
+      </div>
+
+      <div class="catalog__controls">
+        <label class="search" for="searchInput">
+          <svg viewBox="0 0 24 24"><use href="#icon-search"/></svg>
+          <input type="search" id="searchInput" placeholder="Buscar perfume, marca o nota…" autocomplete="off">
+        </label>
+
+        <div class="filter-group" role="group" aria-label="Filtrar por público">
+          <button class="chip is-active" data-filter-gender="todos">Todos</button>
+          <button class="chip" data-filter-gender="hombre">Hombre</button>
+          <button class="chip" data-filter-gender="mujer">Mujer</button>
+          <button class="chip" data-filter-gender="unisex">Unisex</button>
+        </div>
+      </div>
+
+      <div class="catalog__body">
+        <aside class="category-nav" aria-label="Categorías">
+          <ul id="categoryList"></ul>
+        </aside>
+
+        <div class="catalog__results">
+          <div class="product-grid" id="productGrid"></div>
+          <p class="empty-state" id="emptyState" hidden>No encontramos productos con esa búsqueda. Probá con otra marca o nota olfativa.</p>
+          <button class="btn btn--outline load-more" id="loadMore" hidden>Ver más productos</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="nosotros">
+    <div class="wrap about__inner">
+      <div class="about__text">
+        <h2>Perfumería de nicho, a tu alcance</h2>
+        <p>Seleccionamos perfumes de diseñador, árabes y de nicho, y los fraccionamos en decants de 5&nbsp;ml para que puedas explorar fragancias de alta gama sin pagar el frasco completo. Todo con procedencia verificada y atención directa por WhatsApp.</p>
+      </div>
+      <a class="about__ig" href="https://www.instagram.com/laperfumeria.sf/" target="_blank" rel="noopener">
+        <span>@laperfumeria.sf</span>
+        <svg viewBox="0 0 24 24"><use href="#icon-chevron"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div class="brand brand--footer">
+      <svg class="brand__mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-diamond"/></svg>
+      <span class="brand__word">La Perfumería</span>
+    </div>
+    <p>Perfumes originales y decants · San Francisco, Córdoba, Argentina</p>
+    <div class="site-footer__links">
+      <a href="https://www.instagram.com/laperfumeria.sf/" target="_blank" rel="noopener">Instagram</a>
+      <a href="#" id="footerWhatsapp" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Product detail dialog -->
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" id="productModal">
+    <button class="icon-btn modal__close" id="modalClose" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24"><use href="#icon-close"/></svg>
+    </button>
+    <div class="modal__media">
+      <img id="modalImage" alt="">
+    </div>
+    <div class="modal__body">
+      <p class="modal__category" id="modalCategory"></p>
+      <h3 id="modalTitle"></h3>
+      <p class="modal__price" id="modalPrice"></p>
+      <p class="modal__description" id="modalDescription"></p>
+      <div class="qty-stepper">
+        <button class="icon-btn" id="modalQtyMinus" aria-label="Restar unidad"><svg viewBox="0 0 24 24"><use href="#icon-minus"/></svg></button>
+        <span id="modalQty">1</span>
+        <button class="icon-btn" id="modalQtyPlus" aria-label="Sumar unidad"><svg viewBox="0 0 24 24"><use href="#icon-plus"/></svg></button>
+      </div>
+      <button class="btn btn--primary btn--full" id="modalAdd">Agregar al pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart drawer -->
+<div class="drawer-overlay" id="drawerOverlay" hidden></div>
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu pedido" hidden>
+  <div class="cart-drawer__head">
+    <h3>Tu pedido</h3>
+    <button class="icon-btn" id="cartClose" aria-label="Cerrar carrito">
+      <svg viewBox="0 0 24 24"><use href="#icon-close"/></svg>
+    </button>
+  </div>
+  <div class="cart-drawer__body" id="cartItems">
+    <p class="cart-empty" id="cartEmpty">Todavía no agregaste ningún producto.</p>
+  </div>
+  <div class="cart-drawer__foot">
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cartTotal">$0</strong>
+    </div>
+    <button class="btn btn--primary btn--full" id="cartCheckout" disabled>
+      <svg viewBox="0 0 24 24"><use href="#icon-whatsapp"/></svg>
+      Finalizar por WhatsApp
+    </button>
+    <p class="cart-note">Coordinamos pago y envío por WhatsApp al confirmar tu pedido.</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
