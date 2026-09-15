@@ -4,7 +4,7 @@
   // ------------------------------------------------------------------
   // Config
   // ------------------------------------------------------------------
-  const WHATSAPP_NUMBER = "5493564000000"; // TODO: reemplazar por el número real del negocio (con código de país, sin +)
+  const WHATSAPP_NUMBER = "5493564363921";
   const PAGE_SIZE = 24;
   const CART_STORAGE_KEY = "laperfumeria_cart_v1";
 
