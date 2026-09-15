@@ -25,11 +25,61 @@
     mist: "Mist",
   };
 
+  // Ordered most-specific-first so e.g. "Emporio Armani" wins over the
+  // generic "Armani", and abbreviations map back to a readable brand name.
+  const BRANDS = [
+    { name: "Jean Paul Gaultier", tokens: ["jean paul gaultier", "jpg"] },
+    { name: "Yves Saint Laurent", tokens: ["yves saint laurent", "ysl"] },
+    { name: "Giorgio Armani", tokens: ["giorgio armani"] },
+    { name: "Emporio Armani", tokens: ["emporio armani"] },
+    { name: "Armani", tokens: ["armani"] },
+    { name: "Dolce & Gabbana", tokens: ["dolce gabbana", "dolce & gabbana", "d&g"] },
+    { name: "Maison Francis Kurkdjian", tokens: ["maison francis kurkdjian", "mfk"] },
+    { name: "Parfums de Marly", tokens: ["parfums de marly"] },
+    { name: "Carolina Herrera", tokens: ["carolina herrera"] },
+    { name: "Paco Rabanne", tokens: ["paco rabanne"] },
+    { name: "Tom Ford", tokens: ["tom ford"] },
+    { name: "Xerjoff", tokens: ["xerjoff"] },
+    { name: "Montale", tokens: ["montale"] },
+    { name: "Mancera", tokens: ["mancera"] },
+    { name: "Creed", tokens: ["creed"] },
+    { name: "Chanel", tokens: ["chanel"] },
+    { name: "Dior", tokens: ["dior"] },
+    { name: "Versace", tokens: ["versace"] },
+    { name: "Valentino", tokens: ["valentino"] },
+    { name: "Prada", tokens: ["prada"] },
+    { name: "Gucci", tokens: ["gucci"] },
+    { name: "Burberry", tokens: ["burberry"] },
+    { name: "Bvlgari", tokens: ["bvlgari", "bulgari"] },
+    { name: "Givenchy", tokens: ["givenchy"] },
+    { name: "Azzaro", tokens: ["azzaro"] },
+    { name: "Ralph Lauren", tokens: ["ralph lauren", "polo "] },
+    { name: "Issey Miyake", tokens: ["issey miyake"] },
+    { name: "Amouage", tokens: ["amouage"] },
+    { name: "Nishane", tokens: ["nishane"] },
+    { name: "Kilian", tokens: ["kilian"] },
+    { name: "Moschino", tokens: ["moschino"] },
+    { name: "Lancôme", tokens: ["lancome", "lancôme"] },
+    { name: "Hugo Boss", tokens: ["hugo boss"] },
+    { name: "Nautica", tokens: ["nautica"] },
+    { name: "Lattafa", tokens: ["lattafa"] },
+    { name: "Armaf", tokens: ["armaf"] },
+    { name: "Afnan", tokens: ["afnan"] },
+    { name: "Rasasi", tokens: ["rasasi"] },
+    { name: "Al Haramain", tokens: ["al haramain"] },
+  ];
+
   function deriveGender(category) {
     const c = category.toLowerCase();
     if (c.includes("hombre")) return "hombre";
     if (c.includes("mujer")) return "mujer";
     return "unisex";
+  }
+
+  function deriveBrand(title) {
+    const t = title.toLowerCase();
+    const match = BRANDS.find((b) => b.tokens.some((token) => t.includes(token)));
+    return match ? match.name : null;
   }
 
   function formatPrice(value) {
@@ -48,6 +98,8 @@
     products: [],
     category: "todas",
     gender: "todos",
+    brand: "todas",
+    sort: "relevancia",
     query: "",
     visibleCount: PAGE_SIZE,
     cart: loadCart(),
@@ -81,6 +133,8 @@
     loadMore: document.getElementById("loadMore"),
     searchInput: document.getElementById("searchInput"),
     genderChips: document.querySelectorAll("[data-filter-gender]"),
+    brandFilter: document.getElementById("brandFilter"),
+    sortSelect: document.getElementById("sortSelect"),
 
     cartToggle: document.getElementById("cartToggle"),
     cartCount: document.getElementById("cartCount"),
@@ -122,9 +176,22 @@
       ...p,
       image: resolveImage(p.image),
       gender: deriveGender(p.category),
+      brand: deriveBrand(p.title),
     }));
     renderCategoryList();
+    renderBrandOptions();
     renderGrid();
+  }
+
+  function renderBrandOptions() {
+    const counts = {};
+    state.products.forEach((p) => {
+      if (p.brand) counts[p.brand] = (counts[p.brand] || 0) + 1;
+    });
+    const brands = Object.keys(counts).sort((a, b) => a.localeCompare(b, "es"));
+    el.brandFilter.innerHTML =
+      `<option value="todas">Todas las marcas</option>` +
+      brands.map((b) => `<option value="${escapeAttr(b)}">${escapeHtml(b)} (${counts[b]})</option>`).join("");
   }
 
   // ------------------------------------------------------------------
@@ -171,12 +238,24 @@
   // ------------------------------------------------------------------
   function getFiltered() {
     const q = state.query.trim().toLowerCase();
-    return state.products.filter((p) => {
+    const list = state.products.filter((p) => {
       if (state.category !== "todas" && p.category !== state.category) return false;
       if (state.gender !== "todos" && p.gender !== state.gender) return false;
+      if (state.brand !== "todas" && p.brand !== state.brand) return false;
       if (q && !p.title.toLowerCase().includes(q) && !p.description.toLowerCase().includes(q)) return false;
       return true;
     });
+
+    switch (state.sort) {
+      case "precio-asc":
+        return list.sort((a, b) => a.price - b.price);
+      case "precio-desc":
+        return list.sort((a, b) => b.price - a.price);
+      case "nombre-asc":
+        return list.sort((a, b) => a.title.localeCompare(b.title, "es"));
+      default:
+        return list;
+    }
   }
 
   // ------------------------------------------------------------------
@@ -439,6 +518,18 @@
       state.visibleCount = PAGE_SIZE;
       renderGrid();
     });
+  });
+
+  el.brandFilter.addEventListener("change", () => {
+    state.brand = el.brandFilter.value;
+    state.visibleCount = PAGE_SIZE;
+    renderGrid();
+  });
+
+  el.sortSelect.addEventListener("change", () => {
+    state.sort = el.sortSelect.value;
+    state.visibleCount = PAGE_SIZE;
+    renderGrid();
   });
 
   el.loadMore.addEventListener("click", () => {
