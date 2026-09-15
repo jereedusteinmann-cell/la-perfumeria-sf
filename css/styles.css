@@ -160,7 +160,7 @@ button { font-family: inherit; cursor: pointer; }
   height: 72px;
 }
 .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-.brand__mark { width: 26px; height: 26px; color: var(--color-accent); }
+.brand__mark { height: 28px; width: auto; color: var(--color-accent); }
 .brand__word { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; letter-spacing: 0.01em; }
 .site-nav { display: flex; gap: var(--space-5); }
 .site-nav a { text-decoration: none; font-weight: 500; font-size: 0.95rem; color: var(--color-ink-soft); transition: color var(--duration-fast); }
@@ -428,6 +428,18 @@ button { font-family: inherit; cursor: pointer; }
 }
 .product-card__title:hover { text-decoration: underline; }
 .product-card__footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-2); }
+
+.accord-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.1rem 0 0; padding: 0; list-style: none; }
+.accord-chip {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.modal .accord-list { gap: var(--space-2); margin-top: var(--space-1); }
+.modal .accord-chip { font-size: 0.78rem; padding: 0.35rem 0.8rem; }
 .product-card__price { font-weight: 700; font-variant-numeric: tabular-nums; }
 .product-card__price small { display: block; font-weight: 400; color: var(--color-ink-soft); text-decoration: line-through; font-size: 0.75rem; }
 .product-card__add {
@@ -525,6 +537,24 @@ button { font-family: inherit; cursor: pointer; }
 .modal__body h3 { font-size: 1.5rem; }
 .modal__price { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--color-accent-deep); }
 .modal__description { color: var(--color-ink-soft); line-height: 1.6; font-size: 0.92rem; white-space: pre-line; }
+
+.modal__fragrance { border-top: 1px solid var(--color-line); padding-top: var(--space-3); margin-top: var(--space-1); }
+.modal__fragrance-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-ink-soft); margin-bottom: var(--space-2); }
+.modal__fragrance-notes { font-size: 0.85rem; color: var(--color-ink-soft); line-height: 1.55; margin-top: var(--space-2); }
+.modal__fragrance-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-accent-deep);
+  margin-top: var(--space-2);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.modal__fragrance-source:hover { border-color: var(--color-accent-deep); }
+.modal__fragrance-source svg { width: 14px; height: 14px; }
 
 .qty-stepper {
   display: inline-flex;

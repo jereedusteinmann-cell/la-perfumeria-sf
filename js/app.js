@@ -8,6 +8,18 @@
   const PAGE_SIZE = 24;
   const CART_STORAGE_KEY = "laperfumeria_cart_v1";
 
+  // Muted, brand-consistent palette for accord chips — picked by hashing the
+  // accord name, so the same accord always lands on the same color.
+  const ACCORD_PALETTE = [
+    "#e4c1ae", "#c9cba3", "#e8d8a6", "#b9a6c9",
+    "#a9c7c0", "#d8a48f", "#b7b7a4", "#d9bf77",
+  ];
+  function accordColor(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    return ACCORD_PALETTE[hash % ACCORD_PALETTE.length];
+  }
+
   const CATEGORY_LABELS = {
     "COMBO 100 Ml Perfumes sellados": "Combos 100 ml",
     "combos de decants": "Combos de decants",
@@ -69,7 +81,8 @@
     { name: "Al Haramain", tokens: ["al haramain"] },
   ];
 
-  function deriveGender(category) {
+  function deriveGender(category, fragranceGender) {
+    if (fragranceGender) return fragranceGender.toLowerCase();
     const c = category.toLowerCase();
     if (c.includes("hombre")) return "hombre";
     if (c.includes("mujer")) return "mujer";
@@ -153,6 +166,7 @@
     modalTitle: document.getElementById("modalTitle"),
     modalPrice: document.getElementById("modalPrice"),
     modalDescription: document.getElementById("modalDescription"),
+    modalFragrance: document.getElementById("modalFragrance"),
     modalQty: document.getElementById("modalQty"),
     modalQtyMinus: document.getElementById("modalQtyMinus"),
     modalQtyPlus: document.getElementById("modalQtyPlus"),
@@ -170,14 +184,22 @@
   // Data loading
   // ------------------------------------------------------------------
   async function loadProducts() {
-    const res = await fetch("data/products.json");
-    const raw = await res.json();
-    state.products = raw.map((p) => ({
-      ...p,
-      image: resolveImage(p.image),
-      gender: deriveGender(p.category),
-      brand: deriveBrand(p.title),
-    }));
+    const [productsRes, profilesRes] = await Promise.all([
+      fetch("data/products.json"),
+      fetch("data/fragrance-profiles.json"),
+    ]);
+    const raw = await productsRes.json();
+    const profiles = await profilesRes.json();
+    state.products = raw.map((p) => {
+      const fragrance = profiles[p.id] || null;
+      return {
+        ...p,
+        image: resolveImage(p.image),
+        gender: deriveGender(p.category, fragrance && fragrance.gender),
+        brand: deriveBrand(p.title),
+        fragrance,
+      };
+    });
     renderCategoryList();
     renderBrandOptions();
     renderGrid();
@@ -292,6 +314,20 @@
     openModal(id);
   });
 
+  function accordChipsTemplate(fragrance, limit) {
+    if (!fragrance || !fragrance.accords || !fragrance.accords.length) return "";
+    const accords = limit ? fragrance.accords.slice(0, limit) : fragrance.accords;
+    return `
+      <ul class="accord-list">
+        ${accords
+          .map(
+            (a) =>
+              `<li class="accord-chip" style="background:${accordColor(a)}">${escapeHtml(a)}</li>`
+          )
+          .join("")}
+      </ul>`;
+  }
+
   function cardTemplate(p) {
     const badge = KIND_BADGES[p.kind] || "";
     const hasDiscount = p.originalPrice && p.originalPrice > p.price;
@@ -304,6 +340,7 @@
         <div class="product-card__body">
           <p class="product-card__category">${escapeHtml(CATEGORY_LABELS[p.category] || p.category)}</p>
           <button type="button" class="product-card__title">${escapeHtml(p.title)}</button>
+          ${accordChipsTemplate(p.fragrance, 2)}
           <div class="product-card__footer">
             <span class="product-card__price">
               ${formatPrice(p.price)}
@@ -357,9 +394,29 @@
     el.modalTitle.textContent = product.title;
     el.modalPrice.textContent = formatPrice(product.price);
     el.modalDescription.textContent = product.description;
+    renderModalFragrance(product.fragrance);
     el.modalQty.textContent = modalQty;
     revealOverlay(el.modalOverlay);
     document.body.style.overflow = "hidden";
+  }
+
+  function renderModalFragrance(fragrance) {
+    if (!fragrance || !fragrance.accords || !fragrance.accords.length) {
+      el.modalFragrance.hidden = true;
+      el.modalFragrance.innerHTML = "";
+      return;
+    }
+    el.modalFragrance.hidden = false;
+    el.modalFragrance.innerHTML = `
+      <p class="modal__fragrance-label">Acordes principales</p>
+      ${accordChipsTemplate(fragrance)}
+      ${fragrance.notes ? `<p class="modal__fragrance-notes">${escapeHtml(fragrance.notes)}</p>` : ""}
+      ${
+        fragrance.source
+          ? `<a class="modal__fragrance-source" href="${escapeAttr(fragrance.source)}" target="_blank" rel="noopener">Fuente del perfil aromático<svg viewBox="0 0 24 24"><use href="#icon-chevron"/></svg></a>`
+          : ""
+      }
+    `;
   }
 
   function closeModal() {
