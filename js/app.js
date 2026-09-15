@@ -275,30 +275,35 @@
 
     el.grid.innerHTML = visible.map(cardTemplate).join("");
 
-    el.grid.querySelectorAll(".product-card").forEach((card) => {
-      const id = card.dataset.id;
-      card.querySelector(".product-card__media").addEventListener("click", () => openModal(id));
-      card.querySelector(".product-card__title").addEventListener("click", () => openModal(id));
-      card.querySelector(".product-card__add").addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        addToCart(id, 1);
-        pulseAdd(card.querySelector(".product-card__add"));
-      });
-    });
   }
+
+  // Event delegation: one listener handles all cards, including ones added
+  // later by "Ver más productos" — cheaper than binding per card render.
+  el.grid.addEventListener("click", (ev) => {
+    const addBtn = ev.target.closest(".product-card__add");
+    const card = ev.target.closest(".product-card");
+    if (!card) return;
+    const id = card.dataset.id;
+    if (addBtn) {
+      addToCart(id, 1);
+      bumpCartIcon();
+      return;
+    }
+    openModal(id);
+  });
 
   function cardTemplate(p) {
     const badge = KIND_BADGES[p.kind] || "";
     const hasDiscount = p.originalPrice && p.originalPrice > p.price;
     return `
       <article class="product-card" data-id="${escapeAttr(p.id)}">
-        <div class="product-card__media" role="button" tabindex="0" aria-label="Ver ${escapeAttr(p.title)}">
+        <div class="product-card__media">
           ${badge ? `<span class="product-card__badge">${badge}</span>` : ""}
           <img src="${p.image}" alt="${escapeAttr(p.title)}" loading="lazy" width="220" height="220">
         </div>
         <div class="product-card__body">
           <p class="product-card__category">${escapeHtml(CATEGORY_LABELS[p.category] || p.category)}</p>
-          <h3 class="product-card__title">${escapeHtml(p.title)}</h3>
+          <button type="button" class="product-card__title">${escapeHtml(p.title)}</button>
           <div class="product-card__footer">
             <span class="product-card__price">
               ${formatPrice(p.price)}
@@ -312,16 +317,35 @@
       </article>`;
   }
 
-  function pulseAdd(button) {
-    button.style.transform = "scale(0.85)";
-    requestAnimationFrame(() => {
-      button.style.transform = "";
-    });
-  }
-
   // ------------------------------------------------------------------
   // Product modal
   // ------------------------------------------------------------------
+  // Shared open/close for the modal and cart drawer: un-hide, then add the
+  // class that drives the CSS transition on the next frame (so the browser
+  // registers the initial state first); on close, remove the class and wait
+  // for the transition to finish before re-hiding.
+  function revealOverlay(overlayEl) {
+    overlayEl.hidden = false;
+    // Double rAF: guarantees the browser has painted the closed state at
+    // least once before the class flips, so the transition actually plays
+    // (a single rAF can still land before that first paint in some engines).
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => overlayEl.classList.add("is-open"));
+    });
+  }
+
+  function dismissOverlay(overlayEl) {
+    overlayEl.classList.remove("is-open");
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      overlayEl.hidden = true;
+    };
+    overlayEl.addEventListener("transitionend", finish, { once: true });
+    setTimeout(finish, 400); // safety net if transitionend doesn't fire
+  }
+
   function openModal(id) {
     const product = state.products.find((p) => p.id === id);
     if (!product) return;
@@ -334,12 +358,12 @@
     el.modalPrice.textContent = formatPrice(product.price);
     el.modalDescription.textContent = product.description;
     el.modalQty.textContent = modalQty;
-    el.modalOverlay.hidden = false;
+    revealOverlay(el.modalOverlay);
     document.body.style.overflow = "hidden";
   }
 
   function closeModal() {
-    el.modalOverlay.hidden = true;
+    dismissOverlay(el.modalOverlay);
     document.body.style.overflow = "";
     modalProduct = null;
   }
@@ -366,6 +390,7 @@
   el.modalAdd.addEventListener("click", () => {
     if (!modalProduct) return;
     addToCart(modalProduct.id, modalQty);
+    bumpCartIcon();
     closeModal();
   });
 
@@ -458,14 +483,14 @@
   }
 
   function openCart() {
-    el.cartDrawer.hidden = false;
-    el.drawerOverlay.hidden = false;
+    revealOverlay(el.cartDrawer);
+    revealOverlay(el.drawerOverlay);
     document.body.style.overflow = "hidden";
   }
 
   function closeCart() {
-    el.cartDrawer.hidden = true;
-    el.drawerOverlay.hidden = true;
+    dismissOverlay(el.cartDrawer);
+    dismissOverlay(el.drawerOverlay);
     document.body.style.overflow = "";
   }
 
@@ -490,11 +515,19 @@
   // ------------------------------------------------------------------
   function showToast(text) {
     el.toast.textContent = text;
-    el.toast.hidden = false;
+    el.toast.classList.add("is-visible");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
-      el.toast.hidden = true;
+      el.toast.classList.remove("is-visible");
     }, 2200);
+  }
+
+  function bumpCartIcon() {
+    el.cartToggle.classList.remove("is-bumping");
+    // Force reflow so the class can be re-added and replay the transition
+    // even when items are added again before the previous bump settles.
+    void el.cartToggle.offsetWidth;
+    el.cartToggle.classList.add("is-bumping");
   }
 
   // ------------------------------------------------------------------
@@ -541,6 +574,21 @@
   // Misc
   // ------------------------------------------------------------------
   el.footerWhatsapp.href = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+  const siteHeader = document.querySelector(".site-header");
+  let scrollTicking = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        siteHeader.classList.toggle("is-scrolled", window.scrollY > 8);
+        scrollTicking = false;
+      });
+    },
+    { passive: true }
+  );
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
