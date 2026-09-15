@@ -528,10 +528,9 @@ button { font-family: inherit; cursor: pointer; }
   transition: transform 220ms var(--ease-standard);
 }
 .modal-overlay.is-open .modal { transform: scale(1) translateY(0); }
-}
 .modal__close { position: absolute; top: var(--space-2); right: var(--space-2); background: var(--color-paper); z-index: 2; }
-.modal__media { background: var(--color-bg); }
-.modal__media img { width: 100%; height: 100%; object-fit: cover; min-height: 260px; }
+.modal__media { background: var(--color-bg); aspect-ratio: 1 / 1; min-width: 0; }
+.modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .modal__body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); }
 .modal__category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-ink-soft); }
 .modal__body h3 { font-size: 1.5rem; }
@@ -572,7 +571,7 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 640px) {
   .modal { grid-template-columns: 1fr; }
-  .modal__media img { min-height: 200px; }
+  .modal__media { aspect-ratio: 4 / 3; }
 }
 
 /* ============================================
