@@ -257,7 +257,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ============================================
    Trust strip
    ============================================ */
-.strip { background: var(--color-accent-soft); border-bottom: 1px solid var(--color-line); }
+.strip { background: var(--color-accent-soft); border-bottom: 1px solid var(--color-line); scroll-margin-top: 88px; }
 .strip__inner {
   display: flex;
   flex-wrap: wrap;
@@ -278,7 +278,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ============================================
    Catalog
    ============================================ */
-.catalog { padding: var(--space-7) 0; }
+.catalog { padding: var(--space-7) 0; scroll-margin-top: 88px; }
 .catalog__head {
   display: flex;
   align-items: baseline;
@@ -406,7 +406,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ============================================
    About
    ============================================ */
-.about { padding: var(--space-6) 0 var(--space-7); border-top: 1px solid var(--color-line); }
+.about { padding: var(--space-6) 0 var(--space-7); border-top: 1px solid var(--color-line); scroll-margin-top: 88px; }
 .about__inner { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-5); flex-wrap: wrap; }
 .about__text h2 { font-size: 1.7rem; margin-bottom: var(--space-3); }
 .about__text p { max-width: 56ch; color: var(--color-ink-soft); font-size: 1.02rem; line-height: 1.65; }
